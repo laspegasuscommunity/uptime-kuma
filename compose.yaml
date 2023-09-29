@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  #Это конфигурация Docker Compose для запуска облачного хранилища Seafile.
+  uptime-kuma:
+    container_name: uptime-kuma
+    deploy:
+      restart_policy:
+        condition: always
+        delay: 5s
+    image: louislam/uptime-kuma:debian
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+      traefik.enable: "true"
+      traefik.http.routers.uptime-kuma.entrypoints: "websecure"
+      traefik.http.routers.uptime-kuma.rule: "Host(`monitoring.${DOMAIN}`)"
+      traefik.http.routers.uptime-kuma.service: "uptime-kuma"
+      traefik.http.routers.uptime-kuma.tls.certresolver: "letsencrypt"
+      traefik.http.services.uptime-kuma.loadbalancer.server.port: "3001"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./uptime-kuma/data:/app/data"
+
+networks:
+  default:
+    external: true
+    name: $NETWORK
