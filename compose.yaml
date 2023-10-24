@@ -22,6 +22,6 @@ services:
       - "./uptime-kuma/data:/app/data"
 
 networks:
-  default:
+  external:
     external: true
     name: $NETWORK
